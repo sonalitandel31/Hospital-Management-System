@@ -1,0 +1,110 @@
+  .container {
+    max-width: 550px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    justify-items: center;
+}
+header {
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    border-radius: 15px 15px 0 0;
+}
+header h2 {
+    margin: 0;
+    font-size: 2rem;
+}
+nav {
+    margin-top: 10px;
+}
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    margin: 0 15px;
+}
+nav a:hover {
+    text-decoration: underline;
+}
+.sec {
+    padding: 20px 0;
+}
+.sec h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+.sec p {
+    color: #555;
+    margin: 8px 0;
+}
+.btn1 {
+    display: inline-block;
+    background: #0056b3;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-right: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.btn1:hover {
+    background: #004494;
+}
+.form-section {
+    width: 400px;
+    display: none;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+.form-section label {
+    display: block;
+    font-size: 1rem;
+    color: #333;
+    margin: 6px 0 5px;
+}
+.ipt1,
+.email-pass,
+.ipt {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.ipt1:focus,
+.email-pass:focus,
+.ipt:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+.btn {
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    text-transform: uppercase;
+}
+.btn:hover {
+    background: #0056b3;
+}
+h3 {
+    color: #0056b3;
+}
