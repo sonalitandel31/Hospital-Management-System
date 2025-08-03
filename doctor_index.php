@@ -2,17 +2,14 @@
     include("doctor_header.php");
     include("database.php");
 
-    // Fetch doctor ID from session
     $doctor_id = $_SESSION['doctor_id'];
     $current_date = date('Y-m-d');
     
-    // Query to get pending appointments
     $query = "SELECT COUNT(*) AS pending_count FROM appointment WHERE d_id = $doctor_id AND a_date = '$current_date' AND d_status = 0";
     $result = mysqli_query($conn, $query);
     $row = mysqli_fetch_assoc($result);
     $pending_count = $row['pending_count'];
 
-    // Query to get available years for the doctor
     $years_query = "SELECT DISTINCT YEAR(a_date) AS year FROM appointment WHERE d_id = $doctor_id ORDER BY year DESC";
     $years_result = mysqli_query($conn, $years_query);
     
@@ -21,7 +18,6 @@
         $years[] = $row['year'];
     }
 
-    // Query to get monthly earnings for the doctor in the current year
     $earnings_query = "SELECT MONTH(a_date) AS month, SUM(fees) AS total_income 
                        FROM appointment 
                        WHERE d_id = $doctor_id AND d_status = 1 AND YEAR(a_date) = YEAR(CURRENT_DATE)
@@ -65,7 +61,6 @@
             </div>
         </div>
 
-        <!-- Year Selector -->
         <div style="margin-top: 20px; margin-left: 30px;margin-bottom:-3%;">
             <label for="yearSelect">Select Year:</label>
             <select id="yearSelect" style="border:none;">
@@ -75,7 +70,6 @@
             </select>
         </div>
 
-        <!-- Earnings Chart Section -->
         <div style="width: 60%; height: 200px; overflow: hidden; margin: 60px 0 0 30px;">
             <h4>Monthly Earnings</h4>
             <canvas id="earningsChart" style="height: 180px; width: 100%;"></canvas>
@@ -87,23 +81,20 @@
             const ctx = document.getElementById('earningsChart').getContext('2d');
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             
-            // Initial earnings data from PHP
             const earningsData = <?= json_encode($earnings_data) ?>;
 
-            // Prepare chart data
             const earningsByMonth = new Array(12).fill(0);
             earningsData.forEach(item => {
                 earningsByMonth[item.month - 1] = item.total_income;
             });
 
-            // Create the chart
             const earningsChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: months, // Months as labels
+                    labels: months, 
                     datasets: [{
                         label: 'Earnings',
-                        data: earningsByMonth, // Monthly earnings data
+                        data: earningsByMonth,
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 2,
                         fill: false
@@ -133,11 +124,9 @@
                 }
             });
 
-            // Handle year selection change
             document.getElementById('yearSelect').addEventListener('change', function() {
                 const selectedYear = this.value;
 
-                // Fetch new earnings data based on selected year
                 const formData = new FormData();
                 formData.append('doctor_id', '<?= $doctor_id ?>');
                 formData.append('year', selectedYear);
@@ -153,7 +142,6 @@
                         earningsByMonth[item.month - 1] = item.total_income;
                     });
 
-                    // Update chart with new data
                     earningsChart.data.datasets[0].data = earningsByMonth;
                     earningsChart.update();
                 })
@@ -165,12 +153,10 @@
 </html>
 
 <?php
-// Handle the form submission (AJAX) for fetching earnings data based on selected year
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $doctor_id = $_POST['doctor_id'];
     $year = $_POST['year'];
 
-    // Query to get monthly earnings for the doctor in the selected year
     $earnings_query = "SELECT MONTH(a_date) AS month, SUM(fees) AS total_income 
                        FROM appointment 
                        WHERE d_id = $doctor_id AND d_status = 1 AND YEAR(a_date) = $year
@@ -183,7 +169,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $earnings_data[] = $earnings_row;
     }
 
-    // Return the earnings data as JSON
     echo json_encode($earnings_data);
     exit;
 }

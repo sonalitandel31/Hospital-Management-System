@@ -88,7 +88,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: #01579b;
         }
 
-        /* Error/Success Message */
         .form-message {
             text-align: center;
             font-size: 16px;

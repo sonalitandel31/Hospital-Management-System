@@ -2,15 +2,13 @@
 include("doctor_header.php");
 include('database.php');
 
-// Ensure doctor is logged in
 if (!isset($_SESSION['doctor_id'])) {
     header('Location: doctor_login.php');
     exit;
 }
 
-$doctor_id = intval($_SESSION['doctor_id']); // Get the logged-in doctor's ID
+$doctor_id = intval($_SESSION['doctor_id']); 
 
-// Handle patient deletion
 if (isset($_POST['delete']) && isset($_POST['p_detail_id'])) {
     $p_detail_id = intval($_POST['p_detail_id']);
     $query = "DELETE FROM patient_detail WHERE p_detail_id = '$p_detail_id' AND d_id = '$doctor_id'";
@@ -23,7 +21,6 @@ if (isset($_POST['delete']) && isset($_POST['p_detail_id'])) {
     }
 }
 
-// Fetch only patients related to the logged-in doctor
 $query = "SELECT DISTINCT p_detail_id, p_name, p_add, p_email, p_gender, created_at 
           FROM patient_detail 
           WHERE d_id = '$doctor_id'";

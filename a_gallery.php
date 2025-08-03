@@ -1,12 +1,10 @@
 <?php
-ob_start(); // Start output buffering
+ob_start(); 
 include("admin_header.php");
 include("database.php");
 
-// Fetch all categories
 $categories = mysqli_query($conn, "SELECT DISTINCT category FROM pages WHERE type='gallery'");
 
-// Handle Image Upload
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['img'])) {
     if (!empty($_FILES['img']['name']) && !empty($_POST['category'])) {
         $img = basename($_FILES['img']['name']);
@@ -14,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['img'])) {
 
         move_uploaded_file($_FILES['img']['tmp_name'], "img/" . $img);
 
-        // Insert into database with category
         $insertQuery = "INSERT INTO pages (img, category, type) VALUES ('$img', '$category', 'gallery')";
         mysqli_query($conn, $insertQuery);
         header("Location: a_gallery.php");
@@ -22,28 +19,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['img'])) {
     }
 }
 
-// Handle Image Deletion
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     
-    // Fetch image name before deleting
     $imgQuery = "SELECT img FROM pages WHERE id = $id AND type='gallery'";
     $imgResult = mysqli_query($conn, $imgQuery);
     $imgRow = mysqli_fetch_assoc($imgResult);
     
-    // Delete the file from folder
     if (!empty($imgRow['img']) && file_exists("img/" . $imgRow['img'])) {
         unlink("img/" . $imgRow['img']);
     }
 
-    // Delete from database
     $deleteQuery = "DELETE FROM pages WHERE id = $id AND type='gallery'";
     mysqli_query($conn, $deleteQuery);
     header("Location: a_gallery.php");
     exit;
 }
 
-// Filter images by category
 $selected_category = isset($_GET['category']) ? mysqli_real_escape_string($conn, $_GET['category']) : "";
 $query = "SELECT * FROM pages WHERE type='gallery'";
 if (!empty($selected_category)) {
@@ -52,7 +44,7 @@ if (!empty($selected_category)) {
 $query .= " ORDER BY id DESC";
 $result = mysqli_query($conn, $query);
 
-ob_end_flush(); // End output buffering
+ob_end_flush(); 
 ?>
 
 <!DOCTYPE html>
@@ -80,7 +72,6 @@ ob_end_flush(); // End output buffering
     <div class="container">
         <h2>Manage Gallery</h2><br>
 
-        <!-- Upload New Image Form -->
         <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label>Upload Image:</label>
@@ -102,14 +93,13 @@ ob_end_flush(); // End output buffering
             </div>
         </form>
 
-        <!-- Filter by Category -->
         <form method="GET">
             <div class="form-group">
                 <label>Filter by Category:</label>
                 <select name="category" onchange="this.form.submit()">
                     <option value="">-- All Categories --</option>
                     <?php
-                    mysqli_data_seek($categories, 0); // Reset pointer to start
+                    mysqli_data_seek($categories, 0);
                     while ($cat = mysqli_fetch_assoc($categories)) {
                         $selected = ($cat['category'] == $selected_category) ? 'selected' : '';
                         echo "<option value='" . htmlspecialchars($cat['category']) . "' $selected>" . htmlspecialchars($cat['category']) . "</option>";
@@ -119,7 +109,6 @@ ob_end_flush(); // End output buffering
             </div>
         </form>
 
-        <!-- Display Gallery Images -->
         <div class="gallery">
             <?php while ($row = mysqli_fetch_assoc($result)) { ?>
                 <div class="gallery-item">

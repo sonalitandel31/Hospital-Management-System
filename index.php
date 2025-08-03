@@ -57,7 +57,6 @@
     </div>
     <div class="slider">
         <?php
-        // Fetch images from pages table where type is 'ad'
         $query = "SELECT img FROM pages WHERE type='ad'";
         $query_run = mysqli_query($conn, $query);
         if (mysqli_num_rows($query_run) > 0) {

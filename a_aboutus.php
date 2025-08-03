@@ -1,33 +1,28 @@
 <?php
-ob_start(); // Start output buffering
+ob_start();
 include("admin_header.php");
 include("database.php");
 
-// Fetch existing About Us data (Assuming only one entry exists for type='about')
 $query = "SELECT * FROM pages WHERE type='about' LIMIT 1";
 $result = mysqli_query($conn, $query);
 $row = mysqli_fetch_assoc($result);
 
-// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $description = mysqli_real_escape_string($conn, $_POST['description']);
 
-    // Image Upload Handling
-    $img = $row['img']; // Keep old image if not changed
+    $img = $row['img']; 
     if (!empty($_FILES['img']['name'])) {
         $img = basename($_FILES['img']['name']);
         move_uploaded_file($_FILES['img']['tmp_name'], "img/" . $img);
     }
 
-    // Update existing record
     $updateQuery = "UPDATE pages SET description='$description', img='$img' WHERE type='about'";
     mysqli_query($conn, $updateQuery);
 
-    // Redirect and exit to prevent further output
     header("Location: a_aboutus.php");
     exit;
 }
-ob_end_flush(); // End output buffering
+ob_end_flush();
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +48,6 @@ ob_end_flush(); // End output buffering
     <div class="container">
         <h2>About Us Section</h2><br>
 
-        <!-- Edit About Us Form -->
         <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label>Description:</label>

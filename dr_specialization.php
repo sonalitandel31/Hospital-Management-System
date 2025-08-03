@@ -1,9 +1,8 @@
 <?php
-ob_start(); // Start output buffering
+ob_start(); 
 include("admin_header.php");
 include("database.php");
 
-// Handle Adding Specialization
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_specialization'])) {
     $specialization = mysqli_real_escape_string($conn, $_POST['specialization']);
 
@@ -17,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_specialization']))
     }
 }
 
-// Handle Specialization Update
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_specialization'])) {
     $s_id = intval($_POST['s_id']);
     $updated_specialization = mysqli_real_escape_string($conn, $_POST['updated_specialization']);
@@ -30,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_specialization'
     }
 }
 
-// Handle Specialization Deletion
 if (isset($_GET['delete_id'])) {
     $s_id = intval($_GET['delete_id']);
     $delete_query = "DELETE FROM specilization WHERE s_id = $s_id";
@@ -40,11 +37,10 @@ if (isset($_GET['delete_id'])) {
     exit();
 }
 
-// Fetch Specializations
 $query = "SELECT * FROM specilization ORDER BY created_at DESC";
 $result = mysqli_query($conn, $query);
 
-ob_end_flush(); // End output buffering
+ob_end_flush(); 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -153,7 +149,6 @@ ob_end_flush(); // End output buffering
 <div class="container">
     <h2>Doctor Specialization</h2>
 
-    <!-- Add Specialization Form -->
     <form method="POST">
         <input type="text" name="specialization" placeholder="Enter Specialization" required>
         <div class="btn-container">
@@ -161,7 +156,6 @@ ob_end_flush(); // End output buffering
         </div>
     </form>
 
-    <!-- Display Specializations -->
     <table>
         <tr>
             <th>Specialization</th>
@@ -180,7 +174,6 @@ ob_end_flush(); // End output buffering
         <?php } ?>
     </table>
 
-    <!-- Edit Specialization Form -->
     <div id="edit-form" class="edit-form">
         <h3>Edit Specialization</h3>
         <form method="POST">

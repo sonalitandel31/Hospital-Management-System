@@ -1,12 +1,10 @@
 <?php
-ob_start(); // Start output buffering
+ob_start(); 
 include("admin_header.php");
 include("database.php");
 
-// Fetch all advertisements
 $ads = mysqli_query($conn, "SELECT * FROM pages WHERE type='ad'");
 
-// Handle Image Update (Without Deleting Old Images)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_id']) && isset($_FILES['new_img'])) {
     $id = intval($_POST['update_id']);
     
@@ -14,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_id']) && isset(
         $new_img = basename($_FILES['new_img']['name']);
         move_uploaded_file($_FILES['new_img']['tmp_name'], "img/" . $new_img);
 
-        // Update database with new image (old image remains in the folder)
         $updateQuery = "UPDATE pages SET img='$new_img' WHERE id=$id AND type='ad'";
         mysqli_query($conn, $updateQuery);
         
@@ -23,16 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_id']) && isset(
     }
 }
 
-// Handle Advertisement Deletion (Still Deletes Images When Ad is Removed)
 if (isset($_GET['delete_id'])) {
     $id = intval($_GET['delete_id']);
 
-    // Fetch old image (but do NOT delete it)
     $imgQuery = "SELECT img FROM pages WHERE id = $id AND type='ad'";
     $imgResult = mysqli_query($conn, $imgQuery);
     $imgRow = mysqli_fetch_assoc($imgResult);
 
-    // Delete advertisement record from database (image remains in folder)
     $deleteQuery = "DELETE FROM pages WHERE id = $id AND type='ad'";
     mysqli_query($conn, $deleteQuery);
 
@@ -40,7 +34,7 @@ if (isset($_GET['delete_id'])) {
     exit;
 }
 
-ob_end_flush(); // End output buffering
+ob_end_flush(); 
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +55,6 @@ ob_end_flush(); // End output buffering
         .update-form button { background-color: #0277bd; color: white; padding: 10px; border: none; cursor: pointer; width: 100%; margin-bottom: 5px; }
         .update-form button:hover { background-color: #02569b; }
         
-        /* X icon for delete */
         .delete-icon {
             position: absolute;
             top: -8px;
@@ -87,19 +80,15 @@ ob_end_flush(); // End output buffering
     <div class="container">
         <h2>Manage Advertisements</h2><br>
 
-        <!-- Display Advertisement Images -->
         <div class="ads">
             <?php while ($row = mysqli_fetch_assoc($ads)) { ?>
                 <div class="ad-item">
-                    <!-- Delete Icon (X) -->
                     <a href="a_ad.php?delete_id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure you want to delete this ad?');">
                         <button class="delete-icon">✖</button>
                     </a>
 
-                    <!-- Ad Image -->
                     <img src="img/<?php echo htmlspecialchars($row['img']); ?>" alt="Advertisement">
                     
-                    <!-- Update Image Form -->
                     <form method="POST" enctype="multipart/form-data" class="update-form">
                         <input type="hidden" name="update_id" value="<?php echo $row['id']; ?>">
                         <input type="file" name="new_img" required>

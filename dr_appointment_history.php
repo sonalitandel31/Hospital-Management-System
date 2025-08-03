@@ -22,7 +22,7 @@ if (isset($_POST['cancel_id'])) {
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
-$status_filter = isset($_GET['status']) ? intval($_GET['status']) : -1; // Default: Show all
+$status_filter = isset($_GET['status']) ? intval($_GET['status']) : -1; 
 $date_filter = isset($_GET['date']) ? $_GET['date'] : '';
 $query = "SELECT a.a_id, p.fullname AS patient_name, p.email, p.gender, a.a_date, a.a_time, a.d_status
           FROM appointment a

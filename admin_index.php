@@ -2,31 +2,26 @@
 include("admin_header.php");
 include('database.php');
 
-// Ensure admin is logged in
 if (!isset($_SESSION['admin_name'])) {
     header('Location: admin_login.php');
     exit();
 }
 
-// Function to execute query safely
 function getCount($conn, $query) {
     $result = $conn->query($query);
     return $result ? $result->fetch_assoc()['total'] ?? 0 : 0;
 }
 
-// Fetch general statistics
 $patientCount = getCount($conn, "SELECT COUNT(*) AS total FROM patient_mast");
 $doctorCount = getCount($conn, "SELECT COUNT(*) AS total FROM doctor_mast");
 $appointmentCount = getCount($conn, "SELECT COUNT(*) AS total FROM appointment");
 $queryCount = getCount($conn, "SELECT COUNT(*) AS total FROM contactus");
 $totalIncome = getCount($conn, "SELECT SUM(fees) AS total FROM appointment WHERE d_status = 1");
 
-// Handle year selection
 $yearFilter = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
 
-// Fetch income details per doctor & month
 $incomeData = [];
-$doctorNames = []; // Array to hold doctor names
+$doctorNames = []; 
 
 $query = "SELECT a.d_id, d.name AS doctor_name, MONTH(a.a_date) as month, YEAR(a.a_date) as year, SUM(a.fees) as total_income 
           FROM appointment a
@@ -38,7 +33,7 @@ $result = $conn->query($query);
 if ($result) {
     while ($row = $result->fetch_assoc()) {
         $incomeData[] = $row;
-        $doctorNames[$row['d_id']] = $row['doctor_name']; // Store doctor name by doctor ID
+        $doctorNames[$row['d_id']] = $row['doctor_name']; 
 }
 }
 
@@ -69,12 +64,10 @@ if ($result) {
     <div style="width: 80%; margin: auto; height: 300px;">
         <h4>Total Income by Doctor & Month</h4>
 
-        <!-- Year Selection Dropdown -->
         <form method="GET" id="yearForm" style="margin-bottom: 20px;">
             <label for="year">Select Year: </label>
             <select name="year" id="year" style="width: 60px;height:30px; border:none" onchange="document.getElementById('yearForm').submit();">
                 <?php 
-                // Generate options for the last 5 years dynamically
                 $currentYear = date('Y');
                 for ($i = $currentYear; $i >= $currentYear - 5; $i--) {
                     $selected = $i == $yearFilter ? 'selected' : '';
@@ -91,11 +84,11 @@ if ($result) {
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const ctx = document.getElementById('incomeChart').getContext('2d');
-        let incomeChart; // Store chart instance
+        let incomeChart; 
 
         function updateChart() {
             if (incomeChart) {
-                incomeChart.destroy(); // Destroy old chart
+                incomeChart.destroy(); 
             }
 
             const incomeData = <?= json_encode($incomeData) ?>;
@@ -107,7 +100,6 @@ if ($result) {
             const datasets = doctorIds.map(doctor => ({
                 label: doctorNames[doctor], 
                 data: months.map((_, i) => {
-                    // Find the corresponding data for each month
                     const found = incomeData.find(item => item.d_id == doctor && item.month == (i + 1));
                     return found ? found.total_income : 0;
                 }),
@@ -134,7 +126,7 @@ if ($result) {
             });
         }
 
-        updateChart(); // Initialize chart
+        updateChart(); 
     });
 </script>
 
